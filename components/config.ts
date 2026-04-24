@@ -46,6 +46,11 @@ export const initialFilter = {
   links: [],
   date: [],
   noter: true,
+  timeRange: {
+    enabled: false,
+    start: '',
+    end: '',
+  },
 }
 export const initialColoring = {
   method: 'degree',

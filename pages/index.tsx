@@ -883,6 +883,37 @@ export const Graph = function (props: GraphProps) {
           hiddenNodeIdsRef.current = { ...hiddenNodeIdsRef.current, [node.id]: node }
           return false
         }
+        if (filter.timeRange?.enabled) {
+          const startTime = node.properties?.['START-TIME'] as string | undefined
+          const endTime = node.properties?.['END-TIME'] as string | undefined
+          if (startTime || endTime) {
+            const parseOrgDate = (s: string) => {
+              const m = s.match(/(\d{4}-\d{2}-\d{2})(?:\s+\w+)?(?:\s+(\d{2}:\d{2}))?/)
+              if (!m) return null
+              return new Date(m[1] + 'T' + (m[2] || '00:00'))
+            }
+            const nodeStart = startTime ? parseOrgDate(startTime) : null
+            const nodeEnd = endTime ? parseOrgDate(endTime) : null
+            const filterStart = filter.timeRange.start ? new Date(filter.timeRange.start) : null
+            const filterEnd = filter.timeRange.end ? new Date(filter.timeRange.end) : null
+            if (filterEnd && nodeStart && nodeStart > filterEnd) {
+              hiddenNodeIdsRef.current = { ...hiddenNodeIdsRef.current, [node.id]: node }
+              return false
+            }
+            if (filterStart && nodeEnd && nodeEnd < filterStart) {
+              hiddenNodeIdsRef.current = { ...hiddenNodeIdsRef.current, [node.id]: node }
+              return false
+            }
+            if (filterStart && !nodeEnd && nodeStart && nodeStart < filterStart) {
+              hiddenNodeIdsRef.current = { ...hiddenNodeIdsRef.current, [node.id]: node }
+              return false
+            }
+            if (filterEnd && !nodeStart && nodeEnd && nodeEnd > filterEnd) {
+              hiddenNodeIdsRef.current = { ...hiddenNodeIdsRef.current, [node.id]: node }
+              return false
+            }
+          }
+        }
         return true
       })
       .filter((node) => {

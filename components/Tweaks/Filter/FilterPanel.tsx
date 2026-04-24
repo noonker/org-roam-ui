@@ -4,6 +4,7 @@ import {
   Box,
   Button,
   Flex,
+  Input,
   Menu,
   MenuButton,
   StackDivider,
@@ -235,6 +236,75 @@ const FilterPanel = (props: FilterPanelProps) => {
               setTagColors={setTagColors}
               highlightColor={highlightColor}
             />
+          </AccordionPanel>
+        </AccordionItem>
+        <AccordionItem>
+          <AccordionButton>
+            Time range filter
+            <AccordionIcon />
+          </AccordionButton>
+          <AccordionPanel pr={0} mr={0}>
+            <VStack spacing={3} align="stretch">
+              <Flex justifyContent="space-between" alignItems="center">
+                <Text>Enable</Text>
+                <Switch
+                  onChange={() => {
+                    setFilter((curr: typeof initialFilter) => ({
+                      ...curr,
+                      timeRange: {
+                        ...curr.timeRange,
+                        enabled: !curr.timeRange?.enabled,
+                      },
+                    }))
+                  }}
+                  isChecked={filter.timeRange?.enabled ?? false}
+                />
+              </Flex>
+              <Box opacity={filter.timeRange?.enabled ? 1 : 0.5}>
+                <Text mb={1} fontSize="sm">
+                  Start time
+                </Text>
+                <Input
+                  type="datetime-local"
+                  size="sm"
+                  value={filter.timeRange?.start ?? ''}
+                  onChange={(e) => {
+                    setFilter((curr: typeof initialFilter) => ({
+                      ...curr,
+                      timeRange: {
+                        ...curr.timeRange,
+                        start: e.target.value,
+                      },
+                    }))
+                  }}
+                  isDisabled={!filter.timeRange?.enabled}
+                  bg="white"
+                  color="black"
+                />
+              </Box>
+              <Box opacity={filter.timeRange?.enabled ? 1 : 0.5}>
+                <Text mb={1} fontSize="sm">
+                  End time
+                </Text>
+                <Input
+                  type="datetime-local"
+                  size="sm"
+                  value={filter.timeRange?.end ?? ''}
+                  onChange={(e) => {
+                    setFilter((curr: typeof initialFilter) => ({
+                      ...curr,
+                      timeRange: {
+                        ...curr.timeRange,
+                        end: e.target.value,
+                      },
+                    }))
+                  }}
+                  isDisabled={!filter.timeRange?.enabled}
+                  bg="white"
+                  color="black"
+                />
+              </Box>
+            </VStack>
           </AccordionPanel>
         </AccordionItem>
       </Accordion>
